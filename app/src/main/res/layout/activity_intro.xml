@@ -105,6 +105,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/register_now_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -112,7 +113,6 @@
             android:clickable="true"
             android:focusable="true"
             android:minHeight="48dp"
-            android:onClick="register"
             android:text="@string/register"
             android:textColor="#C83F3F"
             android:textSize="16sp" />
