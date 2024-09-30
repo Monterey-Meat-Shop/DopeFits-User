@@ -36,14 +36,4 @@
     <string name="orders_fragment">Orders Fragment</string>
     <string name="profile_fragment">Profile Fragment</string>
 
-
-
-    <string name="register_title">Register</string>
-    <string name="back">Back</string>
-    <string name="title_activity_register">RegisterActivity</string>
-    <string name="phone_number">Phone Number</string>
-    <string name="full_name">Full Name</string>
-    <string name="username">Username</string>
-    <string name="product_image">Image Placeholder</string>
-
 </resources>
