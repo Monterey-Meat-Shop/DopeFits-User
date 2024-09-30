@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dopefits.R
@@ -29,12 +28,6 @@ class IntroActivity : AppCompatActivity() {
             val email = loginEmail.text.toString()
             val password = loginPassword.text.toString()
             authenticateUser(email, password)
-        }
-
-        val registerTextView = findViewById<TextView>(R.id.register_now_text)
-        registerTextView.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
         }
     }
 
