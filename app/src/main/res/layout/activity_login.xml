@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/intro"
+    android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -82,20 +82,24 @@
             android:textSize="16sp"
             app:cornerRadius="10dp" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/forgot_password_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
-            android:onClick="forgotPassword"
+            style="@style/Widget.Material3.Button.TextButton"
             android:text="@string/forgot_password"
             android:textColor="#C83F3F"
-            android:textSize="16sp" />
+            android:backgroundTint="@null"
+            android:layout_marginTop="2dp"
+            android:minHeight="42dp"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:rippleColor="@null" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -104,27 +108,31 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/register_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
-            android:onClick="register"
+            style="@style/Widget.Material3.Button.TextButton"
             android:text="@string/register"
             android:textColor="#C83F3F"
-            android:textSize="16sp" />
+            android:backgroundTint="@null"
+            android:layout_marginTop="2dp"
+            android:minHeight="42dp"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            app:rippleColor="@null" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="100dp"
             android:text="@string/intro_bottom_description"
             android:textColor="@color/black"
-            android:textSize="8sp"
+            android:textSize="10sp"
             tools:ignore="SmallSp" />
 
     </LinearLayout>

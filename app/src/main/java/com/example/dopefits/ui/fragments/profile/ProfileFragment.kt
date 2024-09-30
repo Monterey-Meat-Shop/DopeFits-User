@@ -1,4 +1,4 @@
-package com.example.dopefits.ui.profile
+package com.example.dopefits.ui.fragments.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

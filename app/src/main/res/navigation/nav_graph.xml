@@ -6,25 +6,25 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.dopefits.ui.home.HomeFragment"
+        android:name="com.example.dopefits.ui.fragments.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_cart"
-        android:name="com.example.dopefits.ui.cart.CartFragment"
+        android:name="com.example.dopefits.ui.fragments.cart.CartFragment"
         android:label="Cart"
         tools:layout="@layout/fragment_cart" />
 
     <fragment
         android:id="@+id/nav_orders"
-        android:name="com.example.dopefits.ui.orders.OrdersFragment"
+        android:name="com.example.dopefits.ui.fragments.orders.OrdersFragment"
         android:label="Orders"
         tools:layout="@layout/fragment_orders" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="com.example.dopefits.ui.profile.ProfileFragment"
+        android:name="com.example.dopefits.ui.fragments.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 

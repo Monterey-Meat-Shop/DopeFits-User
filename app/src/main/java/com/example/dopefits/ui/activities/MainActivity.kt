@@ -1,4 +1,4 @@
-package com.example.dopefits.activity
+package com.example.dopefits.ui.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
