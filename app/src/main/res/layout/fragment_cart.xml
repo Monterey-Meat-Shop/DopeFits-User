@@ -1,4 +1,3 @@
-<!-- res/layout/fragment_cart.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,4 +19,35 @@
         android:textStyle="bold"
         android:gravity="end"
         android:paddingTop="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/remove_selected_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Remove Selected"
+            android:padding="8dp"
+            android:backgroundTint="@color/colorSecondary"
+            android:textColor="@color/white" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/proceed_to_checkout_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Proceed to Checkout"
+            android:padding="8dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </LinearLayout>

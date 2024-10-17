@@ -35,6 +35,11 @@ class ProductAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun updateList(newList: List<Product>) {
+        productList = newList
+        notifyDataSetChanged()
+    }
+
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val productImage: ImageView = itemView.findViewById(R.id.product_image)
         private val productName: TextView = itemView.findViewById(R.id.product_name)

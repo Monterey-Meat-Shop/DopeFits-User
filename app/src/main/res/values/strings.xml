@@ -49,5 +49,9 @@
     <string name="image_description">Image Description</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="product_thumbnail">Product Thumbnail</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="given_name">First Name</string>
+    <string name="surname">Surname</string>
+    <string name="address">Address</string>
 
 </resources>

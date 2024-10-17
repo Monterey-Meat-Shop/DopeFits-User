@@ -23,6 +23,11 @@ android {
         }
     }
 
+    repositories {
+        google()
+        mavenCentral()
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -54,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation("com.tbuonomo:dotsindicator:5.0")
     implementation(libs.glide)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

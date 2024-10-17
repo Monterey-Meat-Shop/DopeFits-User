@@ -16,5 +16,6 @@ data class Product(
     val issue: String = "",
     val size: String = "",
     val dimensions: String = "",
-    val stability: Int = 0
+    val stability: Int = 0,
+    val quantity: Int = 1 // Default quantity is 1
 ) : Parcelable

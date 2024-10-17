@@ -2,6 +2,7 @@ package com.example.dopefits.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -19,11 +20,14 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var registerButton: Button
     private lateinit var backButton: Button
-    private lateinit var registerFullName: EditText
+    private lateinit var registerGivenName: EditText
+    private lateinit var registerMiddleName: EditText
+    private lateinit var registerSurname: EditText
     private lateinit var registerUsername: EditText
     private lateinit var registerEmail: EditText
     private lateinit var registerPhoneNumber: EditText
     private lateinit var registerPassword: EditText
+    private lateinit var registerAddress: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +38,34 @@ class RegisterActivity : AppCompatActivity() {
 
         registerButton = findViewById(R.id.register_button)
         backButton = findViewById(R.id.back_button)
-        registerFullName = findViewById(R.id.register_full_name)
+        registerGivenName = findViewById(R.id.register_given_name)
+        registerMiddleName = findViewById(R.id.register_middle_name)
+        registerSurname = findViewById(R.id.register_surname)
         registerUsername = findViewById(R.id.register_username)
         registerEmail = findViewById(R.id.register_email)
         registerPhoneNumber = findViewById(R.id.register_phone_number)
         registerPassword = findViewById(R.id.register_password)
+        registerAddress = findViewById(R.id.register_address)
+
+        registerPhoneNumber.filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
+            if (source.matches(Regex("[0-9]+"))) {
+                source
+            } else {
+                ""
+            }
+        })
 
         registerButton.setOnClickListener {
-            val fullName = registerFullName.text.toString()
+            val givenName = registerGivenName.text.toString()
+            val middleName = registerMiddleName.text.toString()
+            val surname = registerSurname.text.toString()
             val username = registerUsername.text.toString()
             val email = registerEmail.text.toString()
             val phoneNumber = registerPhoneNumber.text.toString()
             val password = registerPassword.text.toString()
-            if (validateInput(fullName, username, email, phoneNumber, password)) {
-                registerUser(fullName, username, email, phoneNumber, password)
+            val address = registerAddress.text.toString()
+            if (validateInput(givenName, middleName, surname, username, email, phoneNumber, password, address)) {
+                registerUser(givenName, middleName, surname, username, email, phoneNumber, password, address)
             }
         }
 
@@ -58,10 +76,20 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateInput(fullName: String, username: String, email: String, phoneNumber: String, password: String): Boolean {
-        if (fullName.isEmpty()) {
-            registerFullName.error = "Full name is required"
-            registerFullName.requestFocus()
+    private fun validateInput(givenName: String, middleName: String, surname: String, username: String, email: String, phoneNumber: String, password: String, address: String): Boolean {
+        if (givenName.isEmpty()) {
+            registerGivenName.error = "Given name is required"
+            registerGivenName.requestFocus()
+            return false
+        }
+        if (middleName.isEmpty()) {
+            registerMiddleName.error = "Middle name is required"
+            registerMiddleName.requestFocus()
+            return false
+        }
+        if (surname.isEmpty()) {
+            registerSurname.error = "Surname is required"
+            registerSurname.requestFocus()
             return false
         }
         if (username.isEmpty()) {
@@ -94,16 +122,21 @@ class RegisterActivity : AppCompatActivity() {
             registerPassword.requestFocus()
             return false
         }
+        if (address.isEmpty()) {
+            registerAddress.error = "Address is required"
+            registerAddress.requestFocus()
+            return false
+        }
         return true
     }
 
-    private fun registerUser(fullName: String, username: String, email: String, phoneNumber: String, password: String) {
+    private fun registerUser(givenName: String, middleName: String, surname: String, username: String, email: String, phoneNumber: String, password: String, address: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
                     if (userId != null) {
-                        val user = User(fullName, username, email, phoneNumber)
+                        val user = User(givenName, middleName, surname, username, email, phoneNumber, address)
                         database.child("users").child(userId).setValue(user)
                             .addOnCompleteListener { dbTask ->
                                 if (dbTask.isSuccessful) {
@@ -129,4 +162,4 @@ class RegisterActivity : AppCompatActivity() {
     }
 }
 
-data class User(val fullName: String, val username: String, val email: String, val phoneNumber: String)
+data class User(val givenName: String, val middleName: String, val surname: String, val username: String, val email: String, val phoneNumber: String, val address: String)

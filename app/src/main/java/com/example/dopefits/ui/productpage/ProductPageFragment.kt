@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -12,10 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.dopefits.R
 import com.example.dopefits.model.Product
-import com.example.dopefits.model.Cart
-import com.example.dopefits.ui.productpage.ImagePagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,11 +39,13 @@ class ProductPageFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_product_page, container, false)
 
         view.findViewById<TextView>(R.id.product_title).text = product.title
-        view.findViewById<TextView>(R.id.product_price).text = product.price.toString()
-        view.findViewById<TextView>(R.id.product_details).text = product.description
+        view.findViewById<TextView>(R.id.product_price).text = "₱${product.price}"
 
         val viewPager = view.findViewById<ViewPager2>(R.id.view_pager)
         viewPager.adapter = ImagePagerAdapter(product.picUrl)
+
+        val dotsIndicator = view.findViewById<DotsIndicator>(R.id.dots_indicator)
+        dotsIndicator.attachTo(viewPager)
 
         view.findViewById<Button>(R.id.add_to_cart_button).setOnClickListener {
             addToCart(product)
@@ -52,34 +55,43 @@ class ProductPageFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        val ratingBar = view.findViewById<RatingBar>(R.id.product_rating)
+        ratingBar.rating = product.stability.toFloat()
+
+        view.findViewById<TextView>(R.id.product_brand).text = product.brand
+        view.findViewById<TextView>(R.id.product_condition).text = product.condition
+        view.findViewById<TextView>(R.id.product_dimensions).text = product.dimensions
+        view.findViewById<TextView>(R.id.product_issue).text = product.issue
+        view.findViewById<TextView>(R.id.product_size).text = product.size
+
         return view
     }
 
     private fun addToCart(product: Product) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val database = FirebaseDatabase.getInstance()
-                val cartRef = database.getReference("cart").push()
-                cartRef.setValue(product)
-                    .addOnSuccessListener {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            if (isAdded) {
-                                Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT).show()
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                if (userId != null) {
+                    val cartRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("Cart").child(product.id.toString())
+                    cartRef.setValue(product)
+                        .addOnSuccessListener {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Toast.makeText(requireContext(), "Item added to cart", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    }
-                    .addOnFailureListener {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            if (isAdded) {
-                                Toast.makeText(requireContext(), "Failed to add to cart", Toast.LENGTH_SHORT).show()
+                        .addOnFailureListener { e ->
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Toast.makeText(requireContext(), "Failed to add item to cart: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
+                } else {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
                     }
+                }
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    if (isAdded) {
-                        Toast.makeText(requireContext(), "Failed to add to cart", Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

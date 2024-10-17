@@ -18,7 +18,11 @@
         android:id="@+id/nav_cart"
         android:name="com.example.dopefits.ui.cart.CartFragment"
         android:label="Cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_productPageFragment"
+            app:destination="@id/nav_product_page" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_orders"
