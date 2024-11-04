@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -36,13 +37,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class CartFragment : BaseFragment() {
 
     private lateinit var cartAdapter: CartAdapter
     private lateinit var totalPriceTextView: TextView
     private lateinit var removeSelectedButton: Button
     private lateinit var proceedToCheckoutButton: Button
+    private lateinit var paymentMethodGroup: RadioGroup
     private val products: MutableList<Product> = mutableListOf()
     private val productKeys: MutableList<String> = mutableListOf()
 
@@ -55,6 +56,7 @@ class CartFragment : BaseFragment() {
         totalPriceTextView = view.findViewById(R.id.total_price)
         removeSelectedButton = view.findViewById(R.id.remove_selected_button)
         proceedToCheckoutButton = view.findViewById(R.id.proceed_to_checkout_button)
+        paymentMethodGroup = view.findViewById(R.id.payment_method_group)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         cartAdapter = CartAdapter(products, this::onItemClick) { position, button ->
@@ -93,7 +95,6 @@ class CartFragment : BaseFragment() {
             val database = FirebaseDatabase.getInstance()
             val cartRef = database.getReference("users").child(userId).child("Cart")
 
-            // Clear the lists before adding new items
             products.clear()
             productKeys.clear()
             cartAdapter.notifyDataSetChanged()
@@ -188,7 +189,21 @@ class CartFragment : BaseFragment() {
             return
         }
 
-        val totalAmount = (selectedProducts.sumOf { it.price } * 100).toInt() // Convert to cents and then to Int
+        val selectedPaymentMethod = when (paymentMethodGroup.checkedRadioButtonId) {
+            R.id.radio_online_payment -> "online"
+            R.id.radio_cod -> "cod"
+            else -> "online"
+        }
+
+        if (selectedPaymentMethod == "online") {
+            proceedWithOnlinePayment(selectedProducts)
+        } else {
+            proceedWithCod(selectedProducts)
+        }
+    }
+
+    private fun proceedWithOnlinePayment(selectedProducts: List<Product>) {
+        val totalAmount = (selectedProducts.sumOf { it.price } * 100).toInt()
         val description = "Purchase of ${selectedProducts.size} items"
         val remarks = "sample remarks"
 
@@ -232,34 +247,32 @@ class CartFragment : BaseFragment() {
         })
     }
 
-    fun saveOrderToFirebase(products: List<Product>, totalAmount: Int) {
+    private fun proceedWithCod(selectedProducts: List<Product>) {
+        val selectedProductIds = selectedProducts.map { it.id.toString() }
+        clearCart(selectedProductIds)
+        AlertDialog.Builder(requireContext())
+            .setTitle("Order Placed")
+            .setMessage("Your order has been placed successfully. Please pay in cash upon delivery.")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                findNavController().navigate(R.id.action_cartFragment_to_nav_home)
+            }
+            .show()
+    }
+
+    private fun clearCart(selectedProductIds: List<String>) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            val database = FirebaseDatabase.getInstance().reference
-            val orderId = database.child("orders").child(userId).push().key
-            if (orderId != null) {
-                val orderDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-                val productNames = products.joinToString(", ") { it.title }
-                val productImages = products.flatMap { it.picUrl }
+            val database = FirebaseDatabase.getInstance()
+            val cartRef = database.getReference("users").child(userId).child("Cart")
 
-                val order = Order(
-                    orderId = orderId,
-                    orderDate = orderDate,
-                    orderStatus = "Completed",
-                    orderTotal = totalAmount.toString(),
-                    productName = productNames,
-                    productImage = productImages
-                )
-                database.child("orders").child(userId).child(orderId).setValue(order)
-                    .addOnSuccessListener {
-                        Log.d("CartFragment", "Order saved to Firebase: $order")
-                    }
-                    .addOnFailureListener {
-                        Log.e("CartFragment", "Failed to save order to Firebase", it)
-                    }
+            selectedProductIds.forEach { productId ->
+                cartRef.child(productId).removeValue().addOnSuccessListener {
+                    // Item removed successfully
+                }.addOnFailureListener {
+                    // Failed to remove item
+                }
             }
-        } else {
-            Log.e("CartFragment", "User not logged in")
         }
     }
 

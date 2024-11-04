@@ -20,6 +20,34 @@
         android:gravity="end"
         android:paddingTop="8dp" />
 
+    <RadioGroup
+        android:id="@+id/payment_method_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:background="@drawable/radio_group_background">
+
+        <RadioButton
+            android:id="@+id/radio_online_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Online Payment"
+            android:buttonTint="@color/colorPrimary"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginEnd="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_cod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cash on Delivery"
+            android:buttonTint="@color/colorPrimary"
+            android:textColor="@color/colorPrimary" />
+    </RadioGroup>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,4 +78,5 @@
             android:backgroundTint="@color/colorPrimary"
             android:textColor="@color/white" />
     </LinearLayout>
+
 </LinearLayout>
