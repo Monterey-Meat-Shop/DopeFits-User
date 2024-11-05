@@ -12,10 +12,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.example.dopefits.R
+import com.example.dopefits.ui.orders.Order
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PaymentFragment : BaseFragment() {
 
@@ -88,6 +91,11 @@ class PaymentFragment : BaseFragment() {
 
     private fun handlePaymentSuccess() {
         val selectedProductIds = arguments?.getStringArrayList("selected_product_ids") ?: emptyList()
+        val orderTotal = arguments?.getString("order_total") ?: "0.00"
+        val productName = arguments?.getString("product_name") ?: "Unknown Product"
+        val productImage = arguments?.getStringArrayList("product_image") ?: listOf("")
+
+        saveOrderToDatabase(selectedProductIds, orderTotal, productName, productImage)
         clearCart(selectedProductIds)
         AlertDialog.Builder(requireContext())
             .setTitle("Payment Successful")
@@ -98,7 +106,6 @@ class PaymentFragment : BaseFragment() {
             }
             .show()
     }
-
     private fun handlePaymentFailure() {
         AlertDialog.Builder(requireContext())
             .setTitle("Payment Failed")
@@ -108,6 +115,31 @@ class PaymentFragment : BaseFragment() {
                 findNavController().navigateUp()
             }
             .show()
+    }
+
+    private fun saveOrderToDatabase(selectedProductIds: List<String>, orderTotal: String, productName: String, productImage: List<String>) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val database = FirebaseDatabase.getInstance()
+            val ordersRef = database.getReference("orders").child(userId)
+
+            val orderId = ordersRef.push().key ?: return
+            val orderDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+            val order = Order(
+                orderId = orderId,
+                orderDate = orderDate,
+                orderStatus = "Completed",
+                orderTotal = orderTotal,
+                productName = productName,
+                productImage = productImage
+            )
+
+            ordersRef.child(orderId).setValue(order).addOnSuccessListener {
+                // Order saved successfully
+            }.addOnFailureListener {
+                // Failed to save order
+            }
+        }
     }
 
     private fun clearCart(selectedProductIds: List<String>) {

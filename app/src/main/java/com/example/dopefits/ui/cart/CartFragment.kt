@@ -1,5 +1,6 @@
 package com.example.dopefits.ui.cart
 
+
 import BaseFragment
 import android.os.Bundle
 import android.util.Log
@@ -229,9 +230,16 @@ class CartFragment : BaseFragment() {
                     val paymentLink = response.body()?.data?.attributes?.checkout_url
                     paymentLink?.let {
                         val selectedProductIds = selectedProducts.map { it.id.toString() }
+                        val orderTotal = totalAmount.toString()
+                        val productName = selectedProducts.joinToString(", ") { it.title }
+                        val productImage = selectedProducts.flatMap { it.picUrl }
+
                         val bundle = Bundle().apply {
                             putString("payment_url", it)
                             putStringArrayList("selected_product_ids", ArrayList(selectedProductIds))
+                            putString("order_total", orderTotal)
+                            putString("product_name", productName)
+                            putStringArrayList("product_image", ArrayList(productImage))
                         }
                         findNavController().navigate(R.id.action_cartFragment_to_paymentFragment, bundle)
                     }
