@@ -84,6 +84,5 @@ class OrdersFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("OrdersFragment", "Database error: ${databaseError.message}")
             }
-        })
-    }
+        })}
 }
