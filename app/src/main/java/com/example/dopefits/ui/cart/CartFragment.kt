@@ -77,6 +77,10 @@ class CartFragment : BaseFragment() {
             calculateTotalPrice()
         }
 
+        paymentMethodGroup.setOnCheckedChangeListener { _, _ ->
+            updateButtonStates()
+        }
+
         loadCartItems()
         updateButtonStates()
         return view
@@ -296,14 +300,19 @@ class CartFragment : BaseFragment() {
 
         val hasSelectedItems = cartAdapter.getSelectedItems().isNotEmpty()
         removeSelectedButton.isEnabled = hasSelectedItems
-        proceedToCheckoutButton.isEnabled = hasSelectedItems
+        proceedToCheckoutButton.isEnabled = hasSelectedItems && paymentMethodGroup.checkedRadioButtonId != -1
 
         val removeButtonColor = if (hasSelectedItems) R.color.colorSecondary else R.color.colorDisabled
-        val checkoutButtonColor = if (hasSelectedItems) R.color.colorPrimary else R.color.colorDisabled
+        val checkoutButtonColor = if (hasSelectedItems && paymentMethodGroup.checkedRadioButtonId != -1) R.color.colorPrimary else R.color.colorDisabled
 
         removeSelectedButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), removeButtonColor)
         proceedToCheckoutButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), checkoutButtonColor)
 
-        Log.d("CartFragment", "Button states updated: removeSelectedButton.isEnabled = $hasSelectedItems, proceedToCheckoutButton.isEnabled = $hasSelectedItems")
+        // Enable or disable payment options based on item selection
+        for (i in 0 until paymentMethodGroup.childCount) {
+            paymentMethodGroup.getChildAt(i).isEnabled = hasSelectedItems
+        }
+
+        Log.d("CartFragment", "Button states updated: removeSelectedButton.isEnabled = $hasSelectedItems, proceedToCheckoutButton.isEnabled = ${proceedToCheckoutButton.isEnabled}")
     }
 }
